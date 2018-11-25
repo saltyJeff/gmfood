@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.gm.android.vehicle.hardware.RotaryControlHelper;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class RecordOrderActivity extends AppCompatActivity {
@@ -28,11 +29,12 @@ public class RecordOrderActivity extends AppCompatActivity {
 		text.setText("Preparing to record");
 		File outputDir = getCacheDir(); // context being the Activity pointer
 		try {
-			outputFile = File.createTempFile("recordOrder", "mp3", outputDir);
+			outputFile = File.createTempFile("recordOrder", ".mp3", outputDir);
 			recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 			recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-			recorder.setOutputFile(outputFile);
+			FileOutputStream fos = new FileOutputStream(outputFile);
+			recorder.setOutputFile(fos.getFD());
 			recorder.prepare();
 			recorder.start();
 			text.setText("Recording to "+outputFile.toString()+" - press button to stop recording");
