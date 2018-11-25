@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".OrderActivity">
+    <TextView
+        android:id="@+id/menuVendor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="VENDOR NAME"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="459dp"
+        android:imeOptions="actionDone"/>
+
+    <Button
+        android:id="@+id/orderButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="PLACE ORDER"
+        tools:text="PLACE ORDER" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/menuList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

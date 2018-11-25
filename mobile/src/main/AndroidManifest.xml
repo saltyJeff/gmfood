@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="gmfood.saltyjeff.github.io.gm_food" >
+    package="gmfood.saltyjeff.github.io.gm_food">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -8,6 +8,8 @@
          location permissions for the 'MyLocation' functionality. 
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <application
         android:allowBackup="true"
@@ -15,7 +17,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -29,33 +31,21 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".VendorSelectActivity"
-            android:label="@string/title_activity_vendor_select" >
+        <activity android:name=".VendorSearchActivity"
+            android:screenOrientation="landscape"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <meta-data
-            android:name="com.google.android.gms.car.application"
-            android:resource="@xml/automotive_app_desc" />
-
-        <service android:name=".MessageService" >
-        </service>
-
-        <receiver android:name=".MessageReadReceiver" >
-            <intent-filter>
-                <action android:name="gmfood.saltyjeff.github.io.gm_food.ACTION_MESSAGE_READ" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name=".MessageReplyReceiver" >
-            <intent-filter>
-                <action android:name="gmfood.saltyjeff.github.io.gm_food.ACTION_MESSAGE_REPLY" />
-            </intent-filter>
-        </receiver>
+        <activity android:name=".OrderActivity"
+            android:screenOrientation="landscape"
+            />
+        <activity android:name=".RecordOrderActivity"
+            android:screenOrientation="landscape"
+            ></activity>
     </application>
 
 </manifest>
