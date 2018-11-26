@@ -1,7 +1,8 @@
 package gmfood.saltyjeff.github.io.gm_food.apistuff;
 
 public class QuoteResponse {
-    public String orderId;
-    public int priceDollars;
-    public short priceCents;
+    public String id;
+    public String vendorId;
+    public String name;
+    public int price;
 }

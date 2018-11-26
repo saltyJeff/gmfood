@@ -36,6 +36,7 @@ public class VendorSearchActivity extends AppCompatActivity {
 	public static final String TAG = "VENDOR SEARCH";
 	public double lat;
 	public double lon;
+	EditText searchBar;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,6 +69,7 @@ public class VendorSearchActivity extends AppCompatActivity {
 		listView.setLayoutManager(listManager);
 		listView.setAdapter(listAdapter);
 		final EditText searchBar = (EditText) findViewById(R.id.editText);
+		this.searchBar = searchBar;
 		searchBar.setOnEditorActionListener(new EditText.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -97,6 +99,22 @@ public class VendorSearchActivity extends AppCompatActivity {
 				return false;
 			}
 		});
+		delayEdit();
+	}
+	public void delayEdit() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				long startTime = System.currentTimeMillis();
+				while(System.currentTimeMillis() < startTime + 3000);
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						VendorSearchActivity.this.searchBar.setText("Fast Food");
+					}
+				});
+			}
+		}).start();
 	}
 	public void pollLocationData() {
 		LocationProvider.LocationCallback callback = new LocationProvider.LocationCallback() {

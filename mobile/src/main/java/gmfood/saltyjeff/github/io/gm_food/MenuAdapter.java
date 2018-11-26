@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class MenuAdapter extends RecyclerView.Adapter<MenuViewHolder> {
 	@NonNull
 	@Override
 	public MenuViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
+		LinearLayout v = (LinearLayout) LayoutInflater.from(parent.getContext())
 				.inflate(R.layout.menu_view, parent, false);
 		MenuViewHolder holder = new MenuViewHolder(v);
 		return holder;

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gm.android.vehicle.hardware.RotaryControlHelper;
+import com.gm.android.vehicle.settings.widget.GmAlertDialog;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
@@ -26,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import gmfood.saltyjeff.github.io.gm_food.apistuff.GMFOOD;
+import gmfood.saltyjeff.github.io.gm_food.apistuff.PayResponse;
 import gmfood.saltyjeff.github.io.gm_food.apistuff.QuoteResponse;
 import okhttp3.Call;
 import okhttp3.MediaType;
@@ -72,8 +74,10 @@ public class RecordOrderActivity extends AppCompatActivity {
 			File outputDir = getCacheDir(); // context being the Activity pointer
 			outputFile = File.createTempFile("recordOrder", ".mp3", outputDir);
 			recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+			recorder.setAudioChannels(1);
+			recorder.setAudioSamplingRate(16000);
 			recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
-			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
 			FileOutputStream fos = new FileOutputStream(outputFile);
 			recorder.setOutputFile(fos.getFD());
 			recorder.prepare();
@@ -125,7 +129,7 @@ public class RecordOrderActivity extends AppCompatActivity {
 		//make request
 		RequestBody requestFile =
 				RequestBody.create(
-						MediaType.parse("audio/mpeg"),
+						MediaType.parse("audio/mp3"),
 						outputFile
 				);
 
@@ -150,23 +154,23 @@ public class RecordOrderActivity extends AppCompatActivity {
 	};
 	void showConfirmation(final QuoteResponse res) {
 		//get the price
-		String priceStr = "$"+res.priceDollars+String.format("%02d", res.priceCents);
-		new AlertDialog.Builder(this)
+		String priceStr = "$"+res.price+".00";
+		new GmAlertDialog.Builder(this)
 				.setTitle("Confirm order: "+priceStr)
 				.setMessage("Do you really want to pay "+priceStr+"?")
-				.setIcon(android.R.drawable.ic_dialog_alert)
 				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int whichButton) {
 						Toast.makeText(RecordOrderActivity.this, "Placing Order", Toast.LENGTH_LONG).show();
 						//TODO: make payment
-						GMFOOD.api.pay(res.orderId).enqueue(new Callback<String>() {
+						GMFOOD.api.pay(res.id).enqueue(new Callback<PayResponse>() {
 							@Override
-							public void onResponse(retrofit2.Call<String> call, retrofit2.Response<String> response) {
-								Toast.makeText(getApplicationContext(), "Order went through", Toast.LENGTH_LONG).show();
+							public void onResponse(retrofit2.Call<PayResponse> call, retrofit2.Response<PayResponse> response) {
+								Toast.makeText(getApplicationContext(), "Order went through using VISA Direct!", Toast.LENGTH_LONG).show();
 							}
 
 							@Override
-							public void onFailure(retrofit2.Call<String> call, Throwable t) {
+							public void onFailure(retrofit2.Call<PayResponse> call, Throwable t) {
+								Log.e(TAG, t.toString());
 								Toast.makeText(getApplicationContext(), "Payment not successful", Toast.LENGTH_LONG).show();
 							}
 						});

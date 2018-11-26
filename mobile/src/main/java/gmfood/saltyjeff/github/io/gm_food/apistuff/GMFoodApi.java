@@ -21,6 +21,6 @@ public interface GMFoodApi {
     @Multipart
     @POST("/quote/{vendorId}")
     Call<QuoteResponse> makeQuote(@Path("vendorId") String vendorId, @Part MultipartBody.Part file);
-    @POST("/quote/{orderId}")
-    Call<String> pay(@Path("orderId") String orderId);
+    @POST("/pay/{orderId}")
+    Call<PayResponse> pay(@Path("orderId") String orderId);
 }

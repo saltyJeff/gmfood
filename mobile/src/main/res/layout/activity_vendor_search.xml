@@ -16,7 +16,8 @@
         android:text="VENDOR NAME"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="459dp"
-        android:imeOptions="actionDone"/>
+        android:imeOptions="actionDone"
+        android:textSize="20pt"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/vendorList"

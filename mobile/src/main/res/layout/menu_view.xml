@@ -1,23 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     tools:context=".OrderActivity">
+
     <TextView
         android:id="@+id/menuName"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dp"
         android:text="GIMME TE CARFAX"
-        android:layout_alignParentLeft="true"
-        />
+        android:textSize="14pt" />
 
     <TextView
         android:id="@+id/menuPrice"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="AAAAAAAAAAAA"
-        android:layout_alignParentRight="true"/>
-</RelativeLayout>
+        android:layout_below="@id/menuName"
+        android:layout_alignParentBottom="true"
+        android:text="$4.20"
+        android:textSize="12pt" />
+
+    <ImageView
+        android:id="@+id/menuImg"
+        android:layout_width="match_parent"
+        android:layout_height="200dip"
+        android:src="@drawable/burger_img" />
+</LinearLayout>

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="1.5in"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".VendorSearchActivity">
@@ -15,19 +15,28 @@
             android:id="@+id/vendorName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GIMME TE CARFAX" />
+            android:text="GIMME TE CARFAX"
+            android:textSize="16pt"/>
 
         <TextView
             android:id="@+id/vendorPrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="AAAAAAAAAAAA" />
+            android:text="AAAAAAAAAAAA"
+            android:textSize="14pt"/>
+
+        <ImageView
+            android:id="@+id/vendorImg"
+            android:layout_width="match_parent"
+            android:layout_height="150dip"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/burger_img" />
     </LinearLayout>
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/placeOrder"
-        android:text="Place Order"
-        android:layout_alignParentBottom="true">
-    </Button>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:text="ORDER"
+        android:textSize="20pt"></Button>
 </RelativeLayout>
