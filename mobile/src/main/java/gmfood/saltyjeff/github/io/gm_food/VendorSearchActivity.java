@@ -12,6 +12,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.List;
+
+import gmfood.saltyjeff.github.io.gm_food.apistuff.GMFOOD;
+import gmfood.saltyjeff.github.io.gm_food.apistuff.OptionBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class VendorSearchActivity extends AppCompatActivity {
 	RecyclerView listView;
 	RecyclerView.Adapter listAdapter;
@@ -27,13 +35,31 @@ public class VendorSearchActivity extends AppCompatActivity {
 		listView = (RecyclerView) findViewById(R.id.vendorList);
 		listView.setLayoutManager(listManager);
 		listView.setAdapter(listAdapter);
-		EditText searchBar = (EditText) findViewById(R.id.editText);
+		final EditText searchBar = (EditText) findViewById(R.id.editText);
 		searchBar.setOnEditorActionListener(new EditText.OnEditorActionListener() {
 			@Override
 			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 				if (actionId == EditorInfo.IME_ACTION_DONE) {
-					((SearchResultAdapter)listAdapter).vendors.add(new Vendor());
-					listAdapter.notifyDataSetChanged();
+					OptionBody opts = new OptionBody();
+					opts.lat = 0;
+					opts.lon = 0;
+					opts.keywords = searchBar.getText().toString().split(" ");
+					//TODO: Perform Info Read
+					GMFOOD.api.getOptions(opts).enqueue(new Callback<List<Vendor>>() {
+						@Override
+						public void onResponse(Call<List<Vendor>> call, Response<List<Vendor>> response) {
+							((SearchResultAdapter)listAdapter).vendors.clear();
+							for(Vendor v : response.body()) {
+								((SearchResultAdapter)listAdapter).vendors.add(v);
+							}
+							listAdapter.notifyDataSetChanged();
+						}
+
+						@Override
+						public void onFailure(Call<List<Vendor>> call, Throwable t) {
+							Log.e(TAG, t.toString());
+						}
+					});
 					return true;
 				}
 				return false;

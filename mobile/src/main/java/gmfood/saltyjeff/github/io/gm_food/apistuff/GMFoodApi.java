@@ -1,4 +1,4 @@
-package apistuff;
+package gmfood.saltyjeff.github.io.gm_food.apistuff;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface GMFoodApi {
     Call<List<MenuItem>> getMenu(@Path("vendorId") String vendorId);
     @Multipart
     @POST("/quote/{vendorId}")
-    Call<QuoteResponse> makeQuote(@Path("vendorId") String vendorId, @Part("keywords") MultipartBody.Part file);
+    Call<QuoteResponse> makeQuote(@Path("vendorId") String vendorId, @Part MultipartBody.Part file);
     @POST("/quote/{orderId}")
     Call<String> pay(@Path("orderId") String orderId);
 }

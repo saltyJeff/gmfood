@@ -5,12 +5,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.gm.android.vehicle.hardware.RotaryControlHelper;
+
+import java.util.List;
+
+import gmfood.saltyjeff.github.io.gm_food.apistuff.GMFOOD;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class OrderActivity extends AppCompatActivity {
 	RecyclerView listView;
@@ -39,14 +47,22 @@ public class OrderActivity extends AppCompatActivity {
 		fillData();
 	}
 	void fillData() {
-		//make a dank order request
-		for(int i = 0; i < 10; i++) {
-			MenuItem item = new MenuItem();
-			item.name = "dank meem";
-			item.priceCents = (short)(Math.random() * 100);
-			((MenuAdapter) listAdapter).menuItems.add(item);
-		}
-		listAdapter.notifyDataSetChanged();
+		GMFOOD.api.getMenu(vendorId).enqueue(new Callback<List<MenuItem>>() {
+			@Override
+			public void onResponse(Call<List<MenuItem>> call, Response<List<MenuItem>> response) {
+				MenuAdapter adapter = (MenuAdapter) listAdapter;
+				adapter.menuItems.clear();
+				for(MenuItem i : response.body()) {
+					adapter.menuItems.add(i);
+				}
+				adapter.notifyDataSetChanged();
+			}
+
+			@Override
+			public void onFailure(Call<List<MenuItem>> call, Throwable t) {
+				Log.e(TAG, t.toString());
+			}
+		});
 	}
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
