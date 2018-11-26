@@ -1,5 +1,6 @@
 package gmfood.saltyjeff.github.io.gm_food;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.media.MediaRecorder;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +14,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gm.android.vehicle.hardware.RotaryControlHelper;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionGrantedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.single.PermissionListener;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -39,9 +46,30 @@ public class RecordOrderActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_record_order);
 		vendorId = getIntent().getStringExtra("id");
 		text = (TextView)findViewById(R.id.recordText);
-		text.setText("Preparing to record");
-		File outputDir = getCacheDir(); // context being the Activity pointer
+		text.setText("Preparing to record... Pls give us the permission");
+		Dexter.withActivity(this)
+				.withPermission(Manifest.permission.RECORD_AUDIO)
+				.withListener(new PermissionListener() {
+					@Override
+					public void onPermissionGranted(PermissionGrantedResponse response) {
+						recordAudioToFile();
+					}
+
+					@Override
+					public void onPermissionDenied(PermissionDeniedResponse response) {
+
+					}
+
+					@Override
+					public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
+
+					}
+				})
+				.check();
+	}
+	void recordAudioToFile() {
 		try {
+			File outputDir = getCacheDir(); // context being the Activity pointer
 			outputFile = File.createTempFile("recordOrder", ".mp3", outputDir);
 			recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
 			recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
