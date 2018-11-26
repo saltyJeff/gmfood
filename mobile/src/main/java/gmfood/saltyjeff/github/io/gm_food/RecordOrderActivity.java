@@ -1,6 +1,8 @@
 package gmfood.saltyjeff.github.io.gm_food;
 
+import android.content.DialogInterface;
 import android.media.MediaRecorder;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +10,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.gm.android.vehicle.hardware.RotaryControlHelper;
 
@@ -83,6 +86,25 @@ public class RecordOrderActivity extends AppCompatActivity {
 		text.setText("Uploading recording, please wait");
 		//dooooodoooo
 		text.setText("Done Recording");
-		finish();
+		//get the price
+		int priceCents = 20;
+		int priceDollars = 4;
+		String priceStr = "$"+priceDollars+String.format("%02d", priceCents);
+		new AlertDialog.Builder(this)
+				.setTitle("Confirm order: "+priceStr)
+				.setMessage("Do you really want to pay "+priceStr+"?")
+				.setIcon(android.R.drawable.ic_dialog_alert)
+				.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int whichButton) {
+						Toast.makeText(RecordOrderActivity.this, "Placing Order", Toast.LENGTH_LONG).show();
+						//make payment
+						finish();
+					}})
+				.setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialogInterface, int i) {
+						finish();
+					}
+				}).show();
 	}
 }
