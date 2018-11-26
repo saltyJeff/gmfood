@@ -43,7 +43,7 @@ public class VendorSearchActivity extends AppCompatActivity {
 					OptionBody opts = new OptionBody();
 					opts.lat = 0;
 					opts.lon = 0;
-					opts.keywords = searchBar.getText().toString().split(" ");
+					opts.keywords = searchBar.getText().toString();
 					//TODO: Perform Info Read
 					GMFOOD.api.getOptions(opts).enqueue(new Callback<List<Vendor>>() {
 						@Override
