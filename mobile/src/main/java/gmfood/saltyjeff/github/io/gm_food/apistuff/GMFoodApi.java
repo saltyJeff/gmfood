@@ -14,8 +14,9 @@ import retrofit2.http.Part;
 import retrofit2.http.Path;
 
 public interface GMFoodApi {
+    @Multipart
     @POST("/options/")
-    Call<List<Vendor>> getOptions(@Body OptionBody body);
+    Call<List<Vendor>> getOptions(@Part MultipartBody.Part file);
     @GET("/menu/{vendorId}")
     Call<List<MenuItem>> getMenu(@Path("vendorId") String vendorId);
     @Multipart

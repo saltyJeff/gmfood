@@ -1,6 +1,7 @@
 package gmfood.saltyjeff.github.io.gm_food;
 
 import android.Manifest;
+import android.media.MediaRecorder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,11 +21,17 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 import gmfood.saltyjeff.github.io.gm_food.apistuff.GMFOOD;
 import gmfood.saltyjeff.github.io.gm_food.apistuff.OptionBody;
 import locationprovider.davidserrano.com.LocationProvider;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,7 +43,7 @@ public class VendorSearchActivity extends AppCompatActivity {
 	public static final String TAG = "VENDOR SEARCH";
 	public double lat;
 	public double lon;
-	EditText searchBar;
+	Button searchButt;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -68,54 +75,31 @@ public class VendorSearchActivity extends AppCompatActivity {
 		listView = (RecyclerView) findViewById(R.id.vendorList);
 		listView.setLayoutManager(listManager);
 		listView.setAdapter(listAdapter);
-		final EditText searchBar = (EditText) findViewById(R.id.editText);
-		this.searchBar = searchBar;
-		searchBar.setOnEditorActionListener(new EditText.OnEditorActionListener() {
+		searchButt = (Button)findViewById(R.id.editText);
+		searchButt.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_DONE) {
-					OptionBody opts = new OptionBody();
-					opts.lat = 0;
-					opts.lon = 0;
-					opts.keywords = searchBar.getText().toString();
-					//TODO: Perform Info Read
-					GMFOOD.api.getOptions(opts).enqueue(new Callback<List<Vendor>>() {
-						@Override
-						public void onResponse(Call<List<Vendor>> call, Response<List<Vendor>> response) {
-							((SearchResultAdapter)listAdapter).vendors.clear();
-							for(Vendor v : response.body()) {
-								((SearchResultAdapter)listAdapter).vendors.add(v);
-							}
-							listAdapter.notifyDataSetChanged();
-						}
-
-						@Override
-						public void onFailure(Call<List<Vendor>> call, Throwable t) {
-							Log.e(TAG, t.toString());
-						}
-					});
-					return true;
-				}
-				return false;
+			public void onClick(View view) {
+				//record audio file
+				recordAudioToFile();
 			}
 		});
-		delayEdit();
+		//delayEdit();
 	}
-	public void delayEdit() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				long startTime = System.currentTimeMillis();
-				while(System.currentTimeMillis() < startTime + 3000);
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						VendorSearchActivity.this.searchBar.setText("Fast Food");
-					}
-				});
+	Callback<List<Vendor>> optionCallback = new Callback<List<Vendor>>() {
+		@Override
+		public void onResponse(Call<List<Vendor>> call, Response<List<Vendor>> response) {
+			((SearchResultAdapter)listAdapter).vendors.clear();
+			for(Vendor v : response.body()) {
+				((SearchResultAdapter)listAdapter).vendors.add(v);
 			}
-		}).start();
-	}
+			listAdapter.notifyDataSetChanged();
+		}
+		@Override
+		public void onFailure(Call<List<Vendor>> call, Throwable t) {
+			Log.e(TAG, t.toString());
+		}
+	};
+
 	public void pollLocationData() {
 		LocationProvider.LocationCallback callback = new LocationProvider.LocationCallback() {
 			@Override
@@ -156,5 +140,70 @@ public class VendorSearchActivity extends AppCompatActivity {
 
 		//start getting location
 		locationProvider.requestLocation();
+	}
+	File outputFile;
+	MediaRecorder recorder = new MediaRecorder();
+	boolean died = false;
+	void stopRecording() {
+		if(died) {
+			return;
+		}
+		died = true;
+		Log.e(TAG, "Ending recordinig of search term");
+		recorder.stop();
+		recorder.release();
+		uploadAudio();
+	}
+	void recordAudioToFile() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				long start = System.currentTimeMillis();
+				while(System.currentTimeMillis() < start + 5000);
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						stopRecording();
+					}
+				});
+			}
+		}).start();
+		try {
+			File outputDir = getCacheDir(); // context being the Activity pointer
+			outputFile = File.createTempFile("recordOrder", ".mp3", outputDir);
+			recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
+			recorder.setAudioChannels(1);
+			recorder.setAudioSamplingRate(16000);
+			recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+			recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
+			FileOutputStream fos = new FileOutputStream(outputFile);
+			recorder.setOutputFile(fos.getFD());
+			recorder.prepare();
+			recorder.start();
+			searchButt.setText("Stop Voice");
+			searchButt.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					stopRecording();
+				}
+			});
+		}
+		catch(IOException e) {
+			Log.e("IO ERR", e.toString());
+			finish();
+		}
+	}
+	void uploadAudio() {
+		searchButt.setText("VOICE SEARCH");
+		RequestBody requestFile =
+				RequestBody.create(
+						MediaType.parse("audio/mp3"),
+						outputFile
+				);
+
+		// MultipartBody.Part is used to send also the actual file name
+		MultipartBody.Part body =
+				MultipartBody.Part.createFormData("keywords", outputFile.getName(), requestFile);
+		GMFOOD.api.getOptions(body).enqueue(optionCallback);
 	}
 }

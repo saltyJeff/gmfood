@@ -73,7 +73,7 @@ public class RecordOrderActivity extends AppCompatActivity {
 		try {
 			File outputDir = getCacheDir(); // context being the Activity pointer
 			outputFile = File.createTempFile("recordOrder", ".mp3", outputDir);
-			recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+			recorder.setAudioSource(MediaRecorder.AudioSource.VOICE_RECOGNITION);
 			recorder.setAudioChannels(1);
 			recorder.setAudioSamplingRate(16000);
 			recorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);

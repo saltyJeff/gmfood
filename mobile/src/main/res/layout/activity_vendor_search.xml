@@ -7,16 +7,14 @@
     android:orientation="vertical"
     tools:context=".VendorSearchActivity">
 
-    <EditText
+    <Button
         android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textCapCharacters"
-        android:text="VENDOR NAME"
+        android:text="VOICE SEARCH"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="459dp"
-        android:imeOptions="actionDone"
         android:textSize="20pt"/>
 
     <android.support.v7.widget.RecyclerView
